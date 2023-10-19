@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>{% block title %}-{%endblock%} | Base Page</title>
+</head>
+<body>
+    <nav class="p-6 flex items-center justify-between bg-gray-800">
+        <a href="/" class="text-xl text-cyan-500">Accounting system</a>
+        
+        
+        <div class="space-x-4">
+            <a href="#" class="text-white">About</a>
+
+            <a href="#" class="py-4 px-6 bg-emerald-600 text-white rounded-xl">Sign up</a>
+            <a href="#" class="py-4 px-6 bg-cyan-600 text-white rounded-xl">Log in</a>
+        </div>
+    </nav>
+    <main class="p-6">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="p-6 bg-gray-900">
+        <p class="text-xs text-gray-400">
+            Design frontend Copyright (c) 2023 -Code with Stein
+        </p>
+    </footer>
+</body>
+</html>
