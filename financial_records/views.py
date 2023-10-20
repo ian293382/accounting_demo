@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 
 from .models import Groups
 
-from .form import FinancialRecord,CategoryForm
+from .form import FinancialRecordForm,CategoryForm
 
 @login_required
 def create_category(request, group_pk):
