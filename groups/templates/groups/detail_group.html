@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="flex">
+    <div class="w-1/5 p-4">
+        <a href="{% url 'groups:detail_group' group.id %}" class="text-decoration-none text-dark">
+            <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
+                <h5 class="text-xl font-semibold mb-2">{{ group.group_name }}</h5>
+                <p class="text-sm text-gray-500">{{ group.created_at }}</p>
+            </div>
+
+            其他群组
+            {% for group in groups  %}
+                <a href="{% url 'groups:detail_group' group.id %}" class="text-decoration-none text-dark">
+                    <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
+                        {{ group.group_name }}
+                    </div>
+                </a>
+            {% endfor  %}
+        </a>
+    </div>
+
+    <div class="w-4/5 p-4">
+        <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
+            <div class="flex">
+                <div class="w-1/2 mx-2">
+                    <a href="#" class="bg-emerald-500 text-white py-4 px-6 rounded-xl mb-2">Create Category</a>
+                </div>
+        
+            </div>
+
+            <div class="w-1/2 mx-2 mt-6 mb-6">
+                Create Category
+                Create Category
+                Create Category
+            </div>
+            <div class="w-1/2 mx-2">
+                <a href="#" class="bg-cyan-500 text-white py-4 px-6 rounded-xl mb-2">Create Record</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
