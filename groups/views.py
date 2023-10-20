@@ -6,6 +6,8 @@ from .form import GroupForm
 
 from .models import Groups
 
+from financial_records.models import Category,FinancialRecord
+
 @login_required
 def groups(request):
     # groups = Groups.objects.all()
@@ -21,10 +23,13 @@ def detail_group(request,pk):
     group = get_object_or_404(Groups, pk=pk, created_by=request.user)
     groups = Groups.objects.filter(created_by=request.user).exclude(pk=pk)
 
+    categories = Category.objects.filter(created_by=request.user, group=group)
+
     return render(request, 'groups/detail_group.html', {
         'groups':groups,
         'group': group,
         'title': group.group_name,
+        'categories': categories,
     })
 
 

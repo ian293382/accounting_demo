@@ -32,9 +32,9 @@
             </div>
 
             <div class="w-1/2 mx-2 mt-6 mb-6">
-                Create Category
-                Create Category
-                Create Category
+             {% for category in categories %}
+                {{ category.name }}
+            {% endfor %}
             </div>
             <div class="w-1/2 mx-2">
                 <a href="#" class="bg-cyan-500 text-white py-4 px-6 rounded-xl mb-2">Create Record</a>
