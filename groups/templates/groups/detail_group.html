@@ -27,14 +27,24 @@
             <div class="flex">
                 <div class="w-1/2 mx-2">
                     <a href="{% url 'financial_records:create_category' group.id %}" class="bg-emerald-500 text-white py-4 px-6 rounded-xl mb-2">Create Category</a>
+                    
+
                 </div>
         
             </div>
 
-            <div class="w-1/2 mx-2 mt-6 mb-6">
+            <div class="w-1/5 mx-2 mt-4 mb-6">
              {% for category in categories %}
-                {{ category.name }}
+                <div class="bg-gray-100 p-6 rounded-xl">
+                    
+                    <a href="{% url 'financial_records:edit_category' group.id category.id %}" class="bg-emerald-500 text-white py-4 px-6 rounded-xl mb-2">  {{ category.name }}</a> 
+                    
+                    |
+               <a href="{% url 'financial_records:delete_category' group.id category.id %}" class="text-rose-500">Delete</a>
             {% endfor %}
+
+               
+                </div>
             </div>
             <div class="w-1/2 mx-2">
                 <a href="#" class="bg-cyan-500 text-white py-4 px-6 rounded-xl mb-2">Create Record</a>
