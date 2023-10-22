@@ -63,3 +63,26 @@ def delete_category(request, group_pk, category_pk):
     category.delete()
 
     return redirect('groups:detail_group', group_pk)
+
+
+@login_required
+def create_record(request, group_pk):
+    group = get_object_or_404(Groups, pk=group_pk)
+
+    if request.method == 'POST':
+        form = FinancialRecordForm(request.POST)
+
+        if form.is_valid():
+            record = form.save(commit=False)
+            record.created_by = request.user
+            record.group = group
+            record.save()
+
+            return redirect('groups:detail_group', group_pk)
+    else:
+        form = FinancialRecordForm()
+
+    return render(request, 'financial_records/create_record.html', {
+        'form': form,
+        'group': group,
+    })

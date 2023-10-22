@@ -25,11 +25,14 @@ def detail_group(request,pk):
 
     categories = Category.objects.filter(created_by=request.user, group=group)
 
+    records = FinancialRecord.objects.filter(created_by=request.user, group=group)
+
     return render(request, 'groups/detail_group.html', {
         'groups':groups,
         'group': group,
         'title': group.group_name,
         'categories': categories,
+        'records': records,
     })
 
 

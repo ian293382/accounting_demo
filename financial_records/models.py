@@ -20,10 +20,11 @@ class FinancialRecord(models.Model):
     category = models.ManyToManyField(Category, related_name='records', blank=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    debit = models.DecimalField(max_digits=16, decimal_places=6)
-    credit = models.DecimalField(max_digits=16, decimal_places=6)
+    debit = models.DecimalField(max_digits=16, decimal_places=6, default=0)
+    credit = models.DecimalField(max_digits=16, decimal_places=6, default=0)
     currency = models.FloatField(default=1.00)
     balance = models.DecimalField(max_digits=16, decimal_places=6, null=True, blank=True)
+    created_by = models.ForeignKey(User, related_name='records', null=True , on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

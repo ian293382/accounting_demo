@@ -10,5 +10,5 @@ class CategoryForm(forms.ModelForm):
 class FinancialRecordForm(forms.ModelForm):
     class Meta:
         model = FinancialRecord
-        fields = ('name','name', 'description', 'debit', 'credit', 'currency', )
+        fields = ('name','name','category', 'description', 'debit', 'credit', 'currency', )
 
