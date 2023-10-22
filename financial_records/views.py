@@ -46,7 +46,7 @@ def edit_category(request, group_pk, category_pk):
             return redirect('groups:detail_group', group_pk)
 
     else:
-        form = CategoryForm()
+        form = CategoryForm(instance=category)
         form.fields['name'].queryset = Category.objects.filter(created_by=request.user, group=group)
 
     return render(request, 'financial_records/create_category.html',{
@@ -75,12 +75,14 @@ def create_record(request, group_pk):
         if form.is_valid():
             record = form.save(commit=False)
             record.created_by = request.user
+            # record.category = category.name
             record.group = group
             record.save()
 
             return redirect('groups:detail_group', group_pk)
     else:
         form = FinancialRecordForm()
+        form.fields['category'].queryset = Category.objects.filter(created_by=request.user)
 
     return render(request, 'financial_records/create_record.html', {
         'form': form,

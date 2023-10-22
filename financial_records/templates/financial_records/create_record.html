@@ -5,7 +5,7 @@
 {% block content %}
     <h1 class="text-xl">{{ title }}</h1>
 
-    <form method="post" url="{% url 'financial_records:edit_record' group.id record.id %}"> <form method="post" action=".">
+    <form method="post" action=".">
         {% csrf_token %}
 
         {{ form.as_p }}
