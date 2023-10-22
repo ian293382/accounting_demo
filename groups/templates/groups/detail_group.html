@@ -51,7 +51,7 @@
                 {% for record in records %}
                     <div class="bg-gray-100 p-6 rounded-xl">
                         
-                        <a href="#" class="bg-emerald-500 text-white py-4 px-6 rounded-xl mb-2">  {{ record.name }}</a> 
+                        <a href="{% url 'financial_records:edit_record' group.id record.id %}" class="bg-emerald-500 text-white py-4 px-6 rounded-xl mb-2">  {{ record.name }}</a> 
                         
                         |
                 <!-- <a href="#" class="text-rose-500">Delete</a> -->

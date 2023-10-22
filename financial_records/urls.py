@@ -9,7 +9,8 @@ urlpatterns = [
     path('groups/<int:group_pk>/categories/<int:category_pk>/delete/', views.delete_category, name='delete_category'),
 
     path('groups/<int:group_pk>/records/create-record/', views.create_record, name='create_record'),
-    
+    path('groups/<int:group_pk>/records/<int:record_pk>/edit/', views.edit_record, name='edit_record'),
+
 ]
 
 

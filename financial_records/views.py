@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect,get_object_or_404
 
-from .models import Groups,Category
+from .models import Groups,Category,FinancialRecord
 
 from .form import FinancialRecordForm,CategoryForm
 
@@ -34,7 +34,7 @@ def create_category(request, group_pk):
 
 @login_required
 def edit_category(request, group_pk, category_pk):
-    group = get_object_or_404(Groups, pk=group_pk)
+    group = get_object_or_404(Groups, id=group_pk)
     category = get_object_or_404(Category, group=group, pk=category_pk, created_by=request.user)
 
     if request.method == 'POST':
@@ -85,4 +85,28 @@ def create_record(request, group_pk):
     return render(request, 'financial_records/create_record.html', {
         'form': form,
         'group': group,
+    })
+
+@login_required
+def edit_record(request, group_pk, record_pk):
+    group = get_object_or_404(Groups, id=group_pk, created_by=request.user)
+    record = get_object_or_404(FinancialRecord, group=group, pk=record_pk, created_by=request.user)
+
+    if request.method == 'POST':
+        form = FinancialRecordForm(request.POST, instance=record)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect('groups:detail_group', group_pk)
+
+    else:
+        form = FinancialRecordForm()
+        form.fields['name'].queryset = FinancialRecord.objects.filter(created_by=request.user, group=group)
+        
+
+    return render(request, 'financial_records/create_category.html',{
+        'form': form,
+        'title': 'Edit Category',
+        
     })
