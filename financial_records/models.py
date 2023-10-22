@@ -31,7 +31,8 @@ class FinancialRecord(models.Model):
 
     @property
     def balance(self):
-        return (self.credit - self.debit) * self.currency
+       # 使用 round 函数将结果四舍五入到两位小数
+      return round((self.credit - self.debit) * self.currency, 2)
     
 
     def __str__(self):
