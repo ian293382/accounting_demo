@@ -101,8 +101,7 @@ def edit_record(request, group_pk, record_pk):
             return redirect('groups:detail_group', group_pk)
 
     else:
-        form = FinancialRecordForm()
-        form.fields['name'].queryset = FinancialRecord.objects.filter(created_by=request.user, group=group)
+        form = FinancialRecordForm(instance=record)
         
 
     return render(request, 'financial_records/create_category.html',{
@@ -110,3 +109,12 @@ def edit_record(request, group_pk, record_pk):
         'title': 'Edit Category',
         
     })
+
+@login_required
+def delete_record(request, group_pk, record_pk):
+    group = get_object_or_404(Groups, id=group_pk)
+    record = get_object_or_404(FinancialRecord, group=group, pk=record_pk, created_by=request.user)
+
+    record.delete()
+
+    return redirect('groups:detail_group', group_pk)
