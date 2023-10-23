@@ -51,21 +51,21 @@
 
             <div class="w-full mx-2 mt-4">
                 <h6 class="text-lg font-semibold mb-2">記錄 (Records)</h6>
-                <table class="w-full  text-center">
+                <table class="w-full mb-6  text-center table-fixed">
                     <thead>
-                        <tr>
+                        <tr> 
                             <th>Name</th>
                             <th>Category</th>
                             <th>Remark</th>
                             <th>Debit</th>
                             <th>Credit</th>
-                            <th>Currency</th>
+                            <th>Currency(TwD) </th>
                             <th>Balance</th>
                             <th>Date</th>
-                            <th>操作</th>
+                            <th>Operator</th>
                         </tr>
                     </thead>
-                    <tbody >
+                    <tbody>
                         {% for record in records %}
                             <tr>
                                 <td>{{ record.name }}</td>

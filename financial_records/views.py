@@ -120,3 +120,4 @@ def delete_record(request, group_pk, record_pk):
     record.delete()
 
     return redirect('groups:detail_group', group_pk)
+
