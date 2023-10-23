@@ -32,34 +32,36 @@
               
             </div>
     
-            <div class="w-4/5 mx-2 mt-4">
-          
+            <div class="w-full mx-2 mt-4">
                 <h6 class="text-lg font-semibold mb-2">類別 (Categories)</h6>
-                {% for category in categories %}
-                    <div class="bg-gray-100 p-6 rounded-xl mb-2">
-                        <a href="{% url 'financial_records:edit_category' group.id category.id %}" class="bg-emerald-500 text-white py-4 px-6 rounded-xl">  {{ category.name }}</a>
-                        <a href="{% url 'financial_records:delete_category' group.id category.id %}" class="text-rose-500 ml-2">Delete</a>
-                    </div>
-                {% endfor %}
-
+                <div class="flex flex-wrap">
+                    {% for category in categories %}
+                        <div class="bg-gray-100 p-6 rounded-xl mb-2 mr-2">
+                            <a href="{% url 'financial_records:edit_category' group.id category.id %}" class="bg-emerald-500 text-white py-4 px-6 rounded-xl mb-2">{{ category.name }}</a>
+                            <a href="{% url 'financial_records:delete_category' group.id category.id %}" class="text-rose-500 ml-2">Delete</a>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
             
-            <div class="w-1/2 mx-2">
-                    
+            <div class="w-1/2 mx-2 mt-8"> <!-- 增加顶部边距 -->
                 <a href="{% url 'financial_records:create_record' group.id %}" class="bg-cyan-500 text-white py-4 px-6 rounded-xl mb-2">Create Record</a>
             </div>
-            <div class="w-4/5 mx-2 mt-4">
+
+
+            <div class="w-full mx-2 mt-4">
                 <h6 class="text-lg font-semibold mb-2">記錄 (Records)</h6>
                 <table class="w-full  text-center">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Category</th>
-                            <th>Description</th>
+                            <th>Remark</th>
                             <th>Debit</th>
                             <th>Credit</th>
                             <th>Currency</th>
                             <th>Balance</th>
+                            <th>Date</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -77,9 +79,10 @@
                                 <td>{{ record.credit|floatformat:2 }}</td>
                                 <td>{{ record.currency|floatformat:2  }}</td>
                                 <td>{{ record.balance|floatformat:2  }}</td>
+                                <td>{{ record.created_at|date:"Y.m.d"  }}</td>
                                 <td>
                                     <a href="{% url 'financial_records:edit_record' group.id record.id %}" class="bg-cyan-500 text-white py-2 px-4 rounded-full">Edit</a>
-                                    <a href="{% url 'financial_records:delete_record' group.id record.id %}" class="bg-rose-500 text-white  py-2 px-2 rounded-full">Delete</a>
+                                    <a href="{% url 'financial_records:delete_record' group.id record.id %}" class="bg-rose-500 text-white  py-2 px-4 rounded-full">Delete</a>
                                 </td>
                             </tr>
                         {% endfor %}
