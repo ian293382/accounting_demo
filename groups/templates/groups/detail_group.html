@@ -67,7 +67,11 @@
                         {% for record in records %}
                             <tr>
                                 <td>{{ record.name }}</td>
-                                <td>{{ record.category.name }}</td>
+                                <td> 
+                                    {% for category in record.category.all %}
+                                        {{ category.name }}</li>
+                                    {% endfor %}
+                                </td>
                                 <td>{{ record.description }}</td>
                                 <td>{{ record.debit|floatformat:2 }}</td>
                                 <td>{{ record.credit|floatformat:2 }}</td>
