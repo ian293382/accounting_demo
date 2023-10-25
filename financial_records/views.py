@@ -108,6 +108,8 @@ def edit_record(request, group_pk, record_pk):
 
     else:
         form = FinancialRecordForm(instance=record)
+        # Limit category to those belonging to the sqpcified group
+        form.fields['category'].queryset = Category.objects.filter(group=group, created_by=request.user)
         
 
     return render(request, 'financial_records/create_category.html',{
