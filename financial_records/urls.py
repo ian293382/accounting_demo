@@ -12,7 +12,7 @@ urlpatterns = [
     path('groups/<int:group_pk>/records/<int:record_pk>/edit/', views.edit_record, name='edit_record'),
     path('groups/<int:group_pk>/records/<int:record_pk>/delete/', views.delete_record, name='delete_record'),
 
-     path('groups/<int:group_pk>/records/export_csv', views.export_csv, name='exportcsv')
+    path('groups/<int:group_pk>/records/export_csv', views.export_csv, name='exportcsv')
 ]
 
 
