@@ -8,6 +8,10 @@ from .models import Groups,Category,FinancialRecord
 
 from .form import FinancialRecordForm,CategoryForm
 
+from django.http import HttpResponse
+import csv
+
+
 @login_required
 def create_category(request, group_pk):
     group = get_object_or_404(Groups, pk=group_pk)
@@ -121,3 +125,27 @@ def delete_record(request, group_pk, record_pk):
 
     return redirect('groups:detail_group', group_pk)
 
+
+def export_csv(request, group_pk):
+    group = get_object_or_404(Groups, id=group_pk)  
+    records = FinancialRecord.objects.filter(group=group, created_by=request.user)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="file.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['name', 'category', 'description', 'debit', 'credit', 'currency', 'balance', 'created_at'])
+
+    for record in records:
+        writer.writerow([
+            record.name,
+            record.category,
+            record.description,
+            record.debit,
+            record.credit,
+            record.currency,
+            record.balance,
+            record.created_at,
+        ])
+
+    return response
