@@ -137,9 +137,12 @@ def export_csv(request, group_pk):
     writer.writerow(['name', 'category', 'description', 'debit', 'credit', 'currency', 'balance', 'created_at'])
 
     for record in records:
+
+        categories = ", ".join([category.name for category in record.category.all()])
+
         writer.writerow([
             record.name,
-            record.category,
+            categories,
             record.description,
             record.debit,
             record.credit,

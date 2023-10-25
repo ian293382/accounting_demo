@@ -45,12 +45,17 @@
             </div>
             
             <div class="w-1/2 mx-2 mt-8"> <!-- 增加顶部边距 -->
-                <a href="{% url 'financial_records:create_record' group.id %}" class="bg-cyan-500 text-white py-4 px-6 rounded-xl mb-2">Create Record</a>
+                <div class="mb-6">
+                    <a href="{% url 'financial_records:create_record' group.id %}" class="bg-cyan-500 text-white py-4 px-6 rounded-xl mb-2">Create Record</a>
+                </div>
+                
+                <div>
+                    <a href="{% url 'financial_records:exportcsv' group.id %}">
+                    <button type="button" class="bg-rose-500 text-white py-4 px-6 rounded-xl mb-2">Export to CSV</button></a>
+                </div>
             </div>
 
-            <div><a href="{% url 'financial_records:exportcsv' group.id %}">
-                <button type="button" class="button">Export to CSV</button></a>
-            </div>
+       
 
             <div class="w-full mx-2 mt-4">
                 <h6 class="text-lg font-semibold mb-2">記錄 (Records)</h6>
