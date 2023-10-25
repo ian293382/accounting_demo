@@ -79,14 +79,14 @@ def create_record(request, group_pk):
         if form.is_valid():
             record = form.save(commit=False)
             record.created_by = request.user
-            # record.category = category.name
+
             record.group = group
             record.save()
-
             return redirect('groups:detail_group', group_pk)
     else:
         form = FinancialRecordForm()
-        form.fields['category'].queryset = Category.objects.filter(created_by=request.user)
+        # Limit category choices to those belonging to the specified group
+        form.fields['category'].queryset = Category.objects.filter(group=group, created_by=request.user)
 
     return render(request, 'financial_records/create_record.html', {
         'form': form,
@@ -138,7 +138,7 @@ def export_csv(request, group_pk):
 
     for record in records:
 
-        categories = ", ".join([category.name for category in record.category.all()])
+        categories = " ".join([category.name for category in record.category.all()])
 
         writer.writerow([
             record.name,
