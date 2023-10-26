@@ -10,6 +10,7 @@ from .form import FinancialRecordForm,CategoryForm
 
 from django.http import HttpResponse
 import csv
+from django.utils import timezone
 
 
 @login_required
@@ -21,7 +22,7 @@ def create_category(request, group_pk):
 
         if form.is_valid():
             category = form.save(commit=False)
-            category.group = group  # 设置关联的群组
+            category.group = group  
             category.created_by = request.user
        
             category.save()
@@ -132,8 +133,15 @@ def export_csv(request, group_pk):
     group = get_object_or_404(Groups, id=group_pk)  
     records = FinancialRecord.objects.filter(group=group, created_by=request.user)
 
+    # group_name = group.group_name 無法使用會造成跳轉頁面
+    group_id = group.id
+    current_time = timezone.now()
+    time_str = current_time.strftime("%Y%m%d")
+    file_name = f"{time_str}-from-group:{group_id}.csv"
+
+    
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="file.csv"'
+    response['Content-Disposition'] = f'attachment; filename="{file_name}".csv'
 
     writer = csv.writer(response)
     writer.writerow(['name', 'category', 'description', 'debit', 'credit', 'currency', 'balance', 'created_at'])
