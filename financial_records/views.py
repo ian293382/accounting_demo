@@ -12,6 +12,7 @@ from django.http import HttpResponse
 import csv
 from django.utils import timezone
 
+from datetime import datetime
 
 @login_required
 def create_category(request, group_pk):
@@ -129,27 +130,44 @@ def delete_record(request, group_pk, record_pk):
     return redirect('groups:detail_group', group_pk)
 
 
+
+
 def export_csv(request, group_pk):
     group = get_object_or_404(Groups, id=group_pk)  
-    records = FinancialRecord.objects.filter(group=group, created_by=request.user)
 
-    # group_name = group.group_name 無法使用會造成跳轉頁面
+    # set from_date to_date
+    from_date_str = request.GET.get('from_date')
+    to_date_str = request.GET.get('to_date')
+
+    if from_date_str and to_date_str:
+        from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
+        to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
+    else:
+        # 預設
+        from_date = datetime.now().replace(day=1)
+        to_date = datetime.max
+
+    records = FinancialRecord.objects.filter(
+        group=group,
+        created_by=request.user,
+        created_at__range=(from_date, to_date)
+    )
+
+    # group_name = group.group_name 无法使用会导致跳转页面
     group_id = group.id
     current_time = timezone.now()
     time_str = current_time.strftime("%Y%m%d")
     file_name = f"{time_str}-from-group:{group_id}.csv"
 
-    
+  
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="{file_name}".csv'
+    response['Content-Disposition'] = f'attachment; filename="{file_name}"'
 
     writer = csv.writer(response)
     writer.writerow(['name', 'category', 'description', 'debit', 'credit', 'currency', 'balance', 'created_at'])
 
     for record in records:
-
         categories = " ".join([category.name for category in record.category.all()])
-
         writer.writerow([
             record.name,
             categories,
@@ -162,3 +180,5 @@ def export_csv(request, group_pk):
         ])
 
     return response
+
+
