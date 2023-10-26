@@ -45,17 +45,34 @@
             </div>
             
             <div class="w-1/2 mx-2 mt-8">
-                <div class="mb-6">
+          
+                
+                <div class="flex items-center justify-between">
+                    <form id="search_form" class="w-full flex items-center" method="get" action="{% url 'financial_records:exportcsv' group.id %}">
+                        <div class="p-4 mr-2">
+                            起始日期 <input type="date" id="from_date" name="from_date">
+                        </div>
+                        <div class="p-4 mr-2">
+                            最终日期 <input type="date" id="to_date" name="to_date">
+                        </div>
+                        <button type="submit" class="bg-amber-500 text-white py-4 px-6 rounded-xl">匯出 CSV</button>
+                    </form>
+                </div>
+
+                <div class="mt-6 mb-6">
                     <a href="{% url 'financial_records:create_record' group.id %}" class="bg-cyan-500 text-white py-4 px-6 rounded-xl mb-2">Create Record</a>
                 </div>
-                
+           
             </div>
 
        
 
             <div class="w-full mx-2 mt-4">
                 <h6 class="text-lg font-semibold mb-2">記錄 (Records)</h6>
-                <table class="w-full mb-6  text-center table-fixed ">
+                <div class="table-responsive">
+
+                
+                <table class="w-full mb-6 text-center table-fixed">
                     <thead>
                         <tr> 
                             <th>Name</th>
@@ -94,22 +111,13 @@
                             </tr>
                         {% endfor %}
                     </tbody>
+                    
                 </table>
+                </div>
             </div>
 
 
-
-            <div class="flex items-center justify-between">
-                <form id="search_form" method="get" action="{% url 'financial_records:exportcsv' group.id %}">
-                    <div class="p-4 mr-2">
-                        起始日期 <input type="date" id="from_date" name="from_date">
-                    </div>
-                    <div class="p-4 mr-2">
-                        最终日期 <input type="date" id="to_date" name="to_date">
-                    </div>
-                    <button type="submit" class="bg-emerald-500 text-white py-4 px-6 rounded-xl">匯出 CSV</button>
-                </form>
-            </div>
+    
         </div>
     </div>
     
