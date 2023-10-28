@@ -6,13 +6,15 @@ from django.shortcuts import render, redirect,get_object_or_404
 
 from .models import Groups,Category,FinancialRecord
 
-from .form import FinancialRecordForm,CategoryForm
+from .form import FinancialRecordForm,CategoryForm,  CSVUploadForm
 
 from django.http import HttpResponse
 import csv
 from django.utils import timezone
 
 from datetime import datetime
+
+
 
 @login_required
 def create_category(request, group_pk):
@@ -182,3 +184,48 @@ def export_csv(request, group_pk):
     return response
 
 
+from django.utils import timezone
+from decimal import Decimal
+
+def import_csv(request, group_pk):
+    group = get_object_or_404(Groups, pk=group_pk)
+   
+    if request.method == 'POST':
+        form = CSVUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['data_file']
+            decoded_data = csv_file.read().decode('utf-8').splitlines()
+            csv_data = csv.reader(decoded_data)
+            # 跳過第一段資料寫法
+
+            # for _ in range(50):
+            #      next(csv_data, None)
+            next(csv_data, None) 
+
+            for row in csv_data:
+                category_name = row[1]
+                category, created = Category.objects.get_or_create(name=category_name, group=group, created_by= request.user)
+
+                
+                financial_record = FinancialRecord(
+                    group=group,
+                    name=row[0],
+                    description=row[2],
+                    debit = Decimal(row[3]),
+                    credit= Decimal(row[4]),
+                    currency= Decimal(row[5]),
+                    created_at=timezone.now(),
+                    created_by= request.user
+                    
+                )
+                financial_record.save()
+
+                # 将Category与FinancialRecord关联
+                financial_record.category.set([category])
+
+            return redirect('groups:detail_group', group_pk)
+
+    else:
+        form = CSVUploadForm()
+
+    return render(request, 'upload_csv.html', {'form': form})

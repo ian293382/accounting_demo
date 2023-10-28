@@ -12,3 +12,13 @@ class FinancialRecordForm(forms.ModelForm):
         model = FinancialRecord
         fields = ('name','category', 'description', 'debit', 'credit', 'currency', )
 
+
+# forms.py
+
+from django import forms
+
+class CSVUploadForm(forms.Form):
+    data_file = forms.FileField(
+        label='選擇CSV文件',
+        help_text='目前只使用CSV格式'
+    )

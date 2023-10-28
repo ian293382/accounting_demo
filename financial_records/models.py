@@ -7,6 +7,8 @@ from accounts.models import User
 # Create your models here.
 from groups.models import Groups
 
+import ast
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     created_by = models.ForeignKey(User, related_name='categories',  on_delete=models.CASCADE)
@@ -43,4 +45,5 @@ class FinancialRecord(models.Model):
     
     def __str__(self):
         return self.name
-    
+
+
