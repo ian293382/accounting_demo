@@ -76,16 +76,22 @@ def delete_category(request, group_pk, category_pk):
 @login_required
 def create_record(request, group_pk):
     group = get_object_or_404(Groups, pk=group_pk)
-
+    
     if request.method == 'POST':
         form = FinancialRecordForm(request.POST)
 
         if form.is_valid():
-            record = form.save(commit=False)
+            record = form.save(commit=False)   
+           
             record.created_by = request.user
 
             record.group = group
             record.save()
+
+            selected_categories = form.cleaned_data['category']       
+          # 将用户选择的类别分配给记录
+            record.category.set(selected_categories)
+
             return redirect('groups:detail_group', group_pk)
     else:
         form = FinancialRecordForm()
