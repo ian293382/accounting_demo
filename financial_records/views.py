@@ -235,3 +235,41 @@ def import_csv(request, group_pk):
         form = CSVUploadForm()
 
     return render(request, 'upload_csv.html', {'form': form})
+
+from django.db.models import Sum
+from django.http import JsonResponse
+from datetime import datetime, timedelta
+def analysis(request, group_pk):
+    group = get_object_or_404(Groups, id=group_pk)
+    current_year = timezone.now().year
+    current_month = 10
+    start_date = datetime(current_year, current_month, 1)
+    end_date = start_date + timedelta(days=30)  # Assuming a month has 30 days
+
+    daily_expenses = FinancialRecord.objects.filter(
+        group=group,
+        created_by=request.user,
+        created_at__range=(start_date, end_date),
+        currency=1.0,
+    ).values('created_at__day').annotate(total_debit=Sum('debit'))
+
+    # Generate labels in the format '10-1', '10-2', ... '10-31'
+    labels = [f'{current_month}-{day}' for day in range(1, 32)]
+
+    # Create a dictionary to hold the data
+    data_dict = {label: 0 for label in labels}
+
+    # Fill in the data based on daily_expenses
+    for expense in daily_expenses:
+        day = expense['created_at__day']
+        data_dict[f'{current_month}-{day}'] = expense['total_debit']
+
+    labels = list(data_dict.keys())
+    total_debits = list(data_dict.values())
+
+    data = {
+        "labels": labels,
+        "total_debits": total_debits,
+    }
+
+    return JsonResponse(data)

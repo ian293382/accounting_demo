@@ -14,6 +14,8 @@ urlpatterns = [
 
     path('groups/<int:group_pk>/records/export_csv', views.export_csv, name='export-csv'),
     path('groups/<int:group_pk>/records/import_csv', views.import_csv, name='import-csv'),
+
+    path('groups/<int:group_pk>/records/analysis', views.analysis, name='analysis'),
 ]
 
 
