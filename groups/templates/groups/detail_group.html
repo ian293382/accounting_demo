@@ -82,7 +82,7 @@
                 
                     <canvas id="debit_Barchar" width="400" height="150"></canvas>
 
-                    <table class="w-full mb-6 text-center table-fixed">
+                    <table class="w-full mt-6 mb-6 text-center table-fixed">
                         <thead>
                             <tr> 
                                 <th>Name</th>
@@ -99,7 +99,7 @@
                         <tbody>
                             {% for record in records %}
                                 <tr class="">
-                                    <td>{{ record.name }}</td>
+                                    <td class="p-4">{{ record.name }}</td>
                                     <td> 
                                         
                                         {% for category in record.category.all %}
@@ -143,7 +143,7 @@
                     data: {
                         labels: data.labels,  // 使用从Ajax请求获取的标签数据
                         datasets: [{
-                            label: '近30天內支出（限定台幣)',
+                            label: '當月近30天內支出（台幣限定)',
                             data: data.total_debits,  // 使用从Ajax请求获取的每日支出数据
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             borderColor: 'rgba(75, 192, 192, 1)',

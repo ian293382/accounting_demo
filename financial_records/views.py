@@ -239,10 +239,11 @@ def import_csv(request, group_pk):
 from django.db.models import Sum
 from django.http import JsonResponse
 from datetime import datetime, timedelta
+from calendar import monthrange
 def analysis(request, group_pk):
     group = get_object_or_404(Groups, id=group_pk)
     current_year = timezone.now().year
-    current_month = 10
+    current_month = timezone.now().month
     start_date = datetime(current_year, current_month, 1)
     end_date = start_date + timedelta(days=30)  # Assuming a month has 30 days
 
@@ -253,8 +254,11 @@ def analysis(request, group_pk):
         currency=1.0,
     ).values('created_at__day').annotate(total_debit=Sum('debit'))
 
-    # Generate labels in the format '10-1', '10-2', ... '10-31'
-    labels = [f'{current_month}-{day}' for day in range(1, 32)]
+    # 動態調整天數 避免鎖死
+    last_day_of_month =  monthrange(current_year, current_month)[1]
+
+    labels = [f'{current_month}-{day}' for day in range(1, last_day_of_month+1)]
+    
 
     # Create a dictionary to hold the data
     data_dict = {label: 0 for label in labels}
@@ -264,6 +268,7 @@ def analysis(request, group_pk):
         day = expense['created_at__day']
         data_dict[f'{current_month}-{day}'] = expense['total_debit']
 
+    # 用字典就有 key 跟 value 都要寫進去
     labels = list(data_dict.keys())
     total_debits = list(data_dict.values())
 
