@@ -226,7 +226,7 @@ def import_csv(request, group_pk):
                 )
                 financial_record.save()
 
-                # 将Category与FinancialRecord关联
+                # conntect relationship Category = FinancialRecord
                 financial_record.category.set([category])
 
             return redirect('groups:detail_group', group_pk)
@@ -242,33 +242,45 @@ from datetime import datetime, timedelta
 from calendar import monthrange
 def analysis(request, group_pk):
     group = get_object_or_404(Groups, id=group_pk)
-    current_year = timezone.now().year
-    current_month = timezone.now().month
-    start_date = datetime(current_year, current_month, 1)
-    end_date = start_date + timedelta(days=30)  # Assuming a month has 30 days
 
+    from_date_str = request.GET.get('from_date')
+    to_date_str = request.GET.get('to_date')
+
+    if from_date_str and to_date_str:
+        from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
+        to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
+    else:
+        # default from_date, to_date
+        current_month = timezone.now().month
+        current_year = timezone.now().year
+        from_date = datetime(current_year, current_month, 1)
+
+        # 處理進位問題 
+        if current_month == 12:
+            to_date = datetime(current_year + 1, 1, 1) - timedelta(days=1)
+        else:
+            to_date = datetime(current_year, current_month + 1, 1) - timedelta(days=1)
+
+    # setting labels
+    labels = [from_date + timedelta(days=i) for i in range((to_date - from_date).days + 1)]
+
+        # filter FinancialRecord objects (update the model and field names)
     daily_expenses = FinancialRecord.objects.filter(
-        group=group,
-        created_by=request.user,
-        created_at__range=(start_date, end_date),
-        currency=1.0,
-    ).values('created_at__day').annotate(total_debit=Sum('debit'))
+                                                    group=group,
+                                                    created_at__range=(from_date, to_date),
+                                                    currency=1.0,
+                                                    )
 
-    # 動態調整天數 避免鎖死
-    last_day_of_month =  monthrange(current_year, current_month)[1]
+                                            # 创建一个字典来存储日期和支出
+    data_dict = {label.strftime('%Y-%m-%d'): 0 for label in labels}
 
-    labels = [f'{current_month}-{day}' for day in range(1, last_day_of_month+1)]
-    
-
-    # Create a dictionary to hold the data
-    data_dict = {label: 0 for label in labels}
-
-    # Fill in the data based on daily_expenses
+    # 填充日期数据
     for expense in daily_expenses:
-        day = expense['created_at__day']
-        data_dict[f'{current_month}-{day}'] = expense['total_debit']
+        day = expense.created_at.day
+        date = from_date + timedelta(days=day - 1)
+        data_dict[date.strftime('%Y-%m-%d')] = expense.debit
 
-    # 用字典就有 key 跟 value 都要寫進去
+    # 转换为列表以返回
     labels = list(data_dict.keys())
     total_debits = list(data_dict.values())
 
