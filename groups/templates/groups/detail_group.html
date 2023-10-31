@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="w-1/2 bg-gray-100 p-4 rounded-xl mb-2 mr-2">
-                        <form method="post" enctype="multipart/form-data" method="get">
+                        <form method="post" enctype="multipart/form-data" action="{% url 'financial_records:import-csv' group.id %}">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="data_file">選擇CSV文件：</label>

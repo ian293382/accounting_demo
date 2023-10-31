@@ -210,7 +210,7 @@ def import_csv(request, group_pk):
 
             for row in csv_data:
                 category_name = row[1]
-                category, created = Category.objects.get_or_create(name=category_name, group=group, created_by= request.user)
+                category, created = Category.objects.get_or_create(name=category_name, group=group, created_by=request.user)
 
                 
                 financial_record = FinancialRecord(
@@ -265,11 +265,16 @@ def analysis(request, group_pk):
     labels = [from_date + timedelta(days=i) for i in range((to_date - from_date).days + 1)]
 
         # filter FinancialRecord objects (update the model and field names)
+    
+  
+   
     daily_expenses = FinancialRecord.objects.filter(
                                                     group=group,
-                                                    created_at__range=(from_date, to_date),
+                                                    # created_at__range=(from_date, to_date), 有問題
                                                     currency=1.0,
+                                                    
                                                     )
+    print(daily_expenses)
 
                                             # 创建一个字典来存储日期和支出
     data_dict = {label.strftime('%Y-%m-%d'): 0 for label in labels}
