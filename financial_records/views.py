@@ -240,52 +240,40 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from calendar import monthrange
+
 def analysis(request, group_pk):
-    group = get_object_or_404(Groups, id=group_pk)
+    # string
+    group = get_object_or_404(Groups, pk=group_pk)
+    
+    from_date = request.GET.get('from_date') 
+    to_date = request.GET.get('to_date')
 
-    from_date_str = request.GET.get('from_date')
-    to_date_str = request.GET.get('to_date')
-
-    if from_date_str and to_date_str:
-        from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
-        to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
+    if from_date and to_date:
+        from_date = datetime.strptime(from_date, '%Y-%m-%d')
+        to_date = datetime.strptime(to_date, '%Y-%m-%d')
     else:
-        # default from_date, to_date
+        # 使用預設日期範圍
         current_month = timezone.now().month
         current_year = timezone.now().year
         from_date = datetime(current_year, current_month, 1)
 
-        # 處理進位問題 
         if current_month == 12:
             to_date = datetime(current_year + 1, 1, 1) - timedelta(days=1)
         else:
             to_date = datetime(current_year, current_month + 1, 1) - timedelta(days=1)
 
-    # setting labels
-    labels = [from_date + timedelta(days=i) for i in range((to_date - from_date).days + 1)]
+    # 計算日期範圍內的每日 debit 總和
+    data_dict = {}
+    while from_date <= to_date:
+        daily_expenses = FinancialRecord.objects.filter(
+            group=group,
+            created_at__date=from_date,
+            currency=1.0,
+        ).aggregate(Sum('debit'))['debit__sum'] or 0
+        data_dict[from_date.strftime('%Y-%m-%d')] = daily_expenses
+        from_date += timedelta(days=1)
 
-        # filter FinancialRecord objects (update the model and field names)
-    
-  
-   
-    daily_expenses = FinancialRecord.objects.filter(
-                                                    group=group,
-                                                    # created_at__range=(from_date, to_date), 有問題
-                                                    currency=1.0,
-                                                    
-                                                    )
-    print(daily_expenses)
-
-                                            # 创建一个字典来存储日期和支出
-    data_dict = {label.strftime('%Y-%m-%d'): 0 for label in labels}
-
-    # 填充日期数据
-    for expense in daily_expenses:
-        day = expense.created_at.day
-        date = from_date + timedelta(days=day - 1)
-        data_dict[date.strftime('%Y-%m-%d')] = expense.debit
-
-    # 转换为列表以返回
+    # 將日期和總和轉換為列表
     labels = list(data_dict.keys())
     total_debits = list(data_dict.values())
 

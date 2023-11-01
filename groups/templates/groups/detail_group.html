@@ -55,13 +55,11 @@
                                 最终日期 <input type="date" id="to_date" name="to_date">
                             </div>
                             <button type="submit" class="bg-amber-500 text-white py-2 px-4 rounded-xl">匯出 CSV</button>
-                        </form>
-
-                     
+                        </form>          
                     </div>
 
                     <div class="w-1/2 bg-gray-100 p-4 rounded-xl mb-2 mr-2">
-                        <form method="post" enctype="multipart/form-data" action="{% url 'financial_records:import-csv' group.id %}">
+                        <form method="post" enctype="multipart/form-data" action="{% url 'financial_records:import-csv'  group.id %}">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="data_file">選擇CSV文件：</label>
@@ -84,14 +82,15 @@
                     
                     <div class="mt-6 mb-6">
                         <h3 class="text-lg font-semibold">分析每日債務</h3>
-                        <form id="search_form" class="w-full flex items-center" method="get">
+                        <!-- <form id="search_form" class="w-full flex items-center" method="get" action="{%  url 'financial_records:analysis' group.id %}"> -->
+                        <form id="search_form" class="w-full flex items-center">
                             <div class="p-4 mr-2">
                                 起始日期 <input type="date" id="from_date" name="from_date" class="custom-input">
                             </div>
                             <div class="p-4 mr-2">
                                 最終日期 <input type="date" id="to_date" name="to_date" class="custom-input">
                             </div>
-                            <button id="analyze_button" class="bg-amber-500 text-white py-2 px-4 rounded-xl" type="submit">分析</button>
+                            <button id="analyze_button" class="bg-amber-500 text-white py-2 px-4 rounded-xl" type="submit" >條件篩選</button>
                         </form>
                     </div>
                     
@@ -148,43 +147,51 @@
    
     
     <script>
- $(document).ready(function () {
-        var ctx = document.getElementById('debit_Barchar').getContext('2d');
-        var url = "{% url 'financial_records:analysis' group.id %}";
-        $.ajax({
-            method: 'GET',
-            url: url,
-            success: function (data) {
-                var myChart = new Chart(ctx, {
-                    type: 'bar',  // char_type
-                    data: {
-                        labels: data.labels,  // Ajax.label
-                        datasets: [{
-                        
-                            label: '當月近30天內支出（台幣限定)',
-                            data: data.total_debits,  // from view.py data
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            x: {
-                                beginAtZero: true  // 寫起始位置
-                            },
-                            y: {
-                                beginAtZero: true  
-                            }
-                        }
-                    }
-                });
-            },
-            error: function (error_data) {
-                console.log('Error fetching data');
-            }
-        });
-    });
+$(document).ready(function () {
+    var ctx = document.getElementById('debit_Barchar').getContext('2d');
+    
+    var from_date = $("#from_date").val();
+    var to_date = $("#to_date").val();
 
+    var url;
+
+    // 检查是否有起始日期和结束日期，然后构建URL
+    if (from_date && to_date == nil) {
+        url = "{% url 'financial_records:analysis' group.id %}";
+
+    } else {
+        url = "{% url 'financial_records:analysis' group.id %}?from_date=" + from_date + "&to_date=" + to_date;
+    }
+
+    $.ajax({
+        method: 'GET',
+        url: url,
+        success: function(data) {
+            var chartData = {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: 'Daily Debits',
+                        data: data.total_debits,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                    },
+                ],
+            };
+
+            var debit_Barchar = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    // 配置其他图表选项
+                },
+            });
+        },
+        error: function(error_data) {
+            console.log('Error fetching data');
+        }
+    });
+});
     </script>
 {% endblock %}
