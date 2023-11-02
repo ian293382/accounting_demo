@@ -8,6 +8,9 @@ from .models import Groups
 
 from financial_records.models import Category,FinancialRecord
 
+# 分頁系統 active detail_group
+from django.core.paginator import Paginator
+
 @login_required
 def groups(request):
     # groups = Groups.objects.all()
@@ -18,8 +21,11 @@ def groups(request):
         'groups': groups,
     })
 
+
+
+
 @login_required
-def detail_group(request,pk):
+def detail_group(request,pk, page=1):
     group = get_object_or_404(Groups, pk=pk, created_by=request.user)
     groups = Groups.objects.filter(created_by=request.user).exclude(pk=pk)
 
@@ -27,12 +33,19 @@ def detail_group(request,pk):
 
     records = FinancialRecord.objects.filter(created_by=request.user, group=group)
 
+    records_paginator = Paginator(records, 5)
+    paginator_page = request.GET.get('page')
+    records_page = records_paginator.get_page(paginator_page)
+
+        
+
     return render(request, 'groups/detail_group.html', {
         'groups':groups,
         'group': group,
         'title': group.group_name,
         'categories': categories,
         'records': records,
+        'records_page': records_page
     })
 
 

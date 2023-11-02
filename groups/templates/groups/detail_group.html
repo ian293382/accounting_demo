@@ -113,7 +113,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for record in records %}
+                            {% for record in records_page %}
                                 <tr class="">
                                     <td class="p-4">{{ record.name }}</td>
                                     <td> 
@@ -138,7 +138,28 @@
                             {% endfor %}
                         </tbody>              
                     </table>
-                </div>
+                
+                   
+                            
+                    <div class="w-full flex flex-col justify-items-center "> 
+                        <div class="w-full text-center mb-6">
+                            <h3 class="text-lg ">Current Page: {{ records_page.number }}</h3>
+                        </div>
+
+                        <div class="w-full flex  items-center justify-center space-x-4">  
+                            {% if records_page.has_previous %}
+                                <a href="?page=1" class="bg-cyan-500 text-white py-2 px-4 rounded-lg hover:bg-cyan-600">Go First Page</a>
+                                <a href="?page={{ records_page.previous_page_number }}" class="bg-cyan-500 text-white py-2 px-4 rounded-lg hover:bg-cyan-600">Previous Page</a>
+                            {% endif %}
+                        
+                            <span class="text-gray-500">Page {{ records_page.number }} of {{ records_page.paginator.num_pages }}</span>
+                        
+                            {% if records_page.has_next %}
+                                <a href="?page={{ records_page.next_page_number }}" class="bg-cyan-500 text-white py-2 px-4 rounded-lg hover:bg-cyan-600">Next Page</a>
+                                <a href="?page={{ records_page.paginator.num_pages }}" class="bg-cyan-500 text-white py-2 px-4 rounded-lg hover:bg-cyan-600">Go Last Page &raquo;</a>
+                            {% endif %}
+                        </div>
+                    </div>
             </div>
 
         </div>
