@@ -20,6 +20,7 @@
             <a href="{% url 'groups:groups' %}" class="text-white">Groups</a>
             <a href="{% url 'accounts:logout' %}" class="py-4 px-6 bg-rose-600 text-white rounded-xl">Log out</a>
             {% else %}
+               
                 <a href="{% url 'accounts:signup' %}" class="py-4 px-6 bg-emerald-600 text-white rounded-xl">Sign up</a>
                 <a href="{% url 'accounts:login' %}" class="py-4 px-6 bg-cyan-600 text-white rounded-xl">Log in</a>
             {% endif %}

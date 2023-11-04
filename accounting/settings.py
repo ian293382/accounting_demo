@@ -76,7 +76,8 @@ SOCIALACCOUNT_PROVIDER = {
     "google":{
         "SCOPE": [
             "profile",
-            "email"
+            "email",
+            'https://www.googleapis.com/auth/calendar.readonly',
         ],
         "AUTH_PARAMS": {"access_type": "online"}
     }
