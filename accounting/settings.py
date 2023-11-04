@@ -32,7 +32,22 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+ACTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
 # Application definition
+# google OAuth need 1. djngo.contrib.site , allauth allauth.account
+#                   2. allauth.socialaccount, allauth.socialaccount.providers.google
+SITE_ID = 2
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -45,7 +60,28 @@ INSTALLED_APPS = [
     'financial_records',
     'groups',
     'core',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',  
+    'allauth.socialaccount',
+    
+    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.facebook',
+
 ]
+
+# Active SOCIALACCOUNT PROVIDER GOOGLE
+SOCIALACCOUNT_PROVIDER = {
+    "google":{
+        "SCOPE": [
+            "profile",
+            "email"
+        ],
+        "AUTH_PARAMS": {"access_type": "online"}
+    }
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -55,6 +91,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'accounting.urls'
@@ -130,7 +167,3 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
