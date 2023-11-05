@@ -28,20 +28,13 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'accounts.User'
-LOGIN_URL = '/login/'
+LOGIN_URL = '/accounts/google/login/'
+
+# LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-ACTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
 
 # Application definition
 # google OAuth need 1. djngo.contrib.site , allauth allauth.account
@@ -77,11 +70,16 @@ SOCIALACCOUNT_PROVIDER = {
         "SCOPE": [
             "profile",
             "email",
-            'https://www.googleapis.com/auth/calendar.readonly',
         ],
-        "AUTH_PARAMS": {"access_type": "online"}
+        "AUTH_PARAMS": {"access_type": "online"},
+        
     }
 }
+
+SOCIALACCOUNT_LOGIN_ON_GET=True
+ACCOUNT_SESSION_REMEMBER = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 60
 
 
 MIDDLEWARE = [
@@ -168,3 +166,13 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+ACTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
