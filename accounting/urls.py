@@ -24,5 +24,7 @@ urlpatterns = [
     path('groups/', include('groups.urls')),
     path('admin/', admin.site.urls),
     path('google-login/', include('allauth.urls')),
+    path('line_bot/', include('line_bot.urls')), 
+    
 
 ]

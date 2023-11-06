@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-r^i@tm8ocs@q_!l9ma$l0r!zu=0r(un0u6vqhbye&xv)vttlum
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# setting ngrok
+ALLOWED_HOSTS = ["*"]
 
 AUTH_USER_MODEL = 'accounts.User'
 LOGIN_URL = '/accounts/google/login/'
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'financial_records',
     'groups',
     'core',
+    'line_bot',
 
     'django.contrib.sites',
     'allauth',
