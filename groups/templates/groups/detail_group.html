@@ -167,38 +167,73 @@
     
    
     
-
-<script>
+    <script>
 $(document).ready(function () {
-    var ctx = document.getElementById('debit_Barchar').getContext('2d');
     
+    var urlParams = new URLSearchParams(window.location.search);
+
+
+    var ctx = document.getElementById('debit_Barchar').getContext('2d');
     var from_date = $("#from_date").val();
     var to_date = $("#to_date").val();
-    
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var url_from_date = urlParams.get('from_date');
+    var url_to_date = urlParams.get('to_date');
+
+    if (url_from_date && url_to_date) {
+        from_date = url_from_date;
+        to_date = url_to_date;
+    }
+
     var url;
 
-    // 检查是否有起始日期和结束日期，然后构建URL
-    if (from_date && to_date == nil) {
+    // from_date to_date 參數檢查
+    if (from_date && !to_date) {
         url = "{% url 'financial_records:analysis' group.id %}";
-
     } else {
         url = "{% url 'financial_records:analysis' group.id %}?from_date=" + from_date + "&to_date=" + to_date;
     }
+    
+    console.log('from_date:', from_date);
+    console.log('to_date:', to_date);
 
-    // 添加console.log语句来记录URL
-    console.log("Request URL: " + url);
 
+
+    
     $.ajax({
         method: 'GET',
-        
         url: url,
         success: function(data) {
+            const targetDate = from_date;
+
+            const index = data.labels.findIndex(date => date === targetDate);
+
+            console.log("targetDate:", targetDate);
+            console.log("index:", index);
+
+            // 判斷是否有選擇日期，如果沒有則顯示整個月的資料
+            // 如果已選擇了有效日期
+            if (index >= 0) {
+                // 從該日期開始的資料
+                filteredData = {
+                    labels: data.labels.slice(index),
+                    total_debits: data.total_debits.slice(index)
+                };
+            } else {
+                // 如果未選擇有效日期，則使用整個月的資料
+                filteredData = data;
+            }
+
+            console.log('data:', data);
+            console.log('filteredData:', filteredData);
+
             var chartData = {
-                labels: data.labels,
+                labels: filteredData.labels,
                 datasets: [
                     {
                         label: 'Daily Debits',
-                        data: data.total_debits,
+                        data: filteredData.total_debits,
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1,
@@ -216,10 +251,8 @@ $(document).ready(function () {
         },
         error: function(error_data) {
             console.log('Error fetching data');
-        },
-        
+        }
     });
 });
-
-</script>
+    </script>
 {% endblock %}
