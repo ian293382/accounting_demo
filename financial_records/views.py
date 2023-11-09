@@ -255,13 +255,13 @@ def analysis(request, group_pk):
         # 使用預設日期範圍
         current_month = timezone.now().month
         current_year = timezone.now().year
-        from_date = datetime(current_year, current_month, 1)
+        
 
         if current_month == 12:
             to_date = datetime(current_year + 1, 1, 1) - timedelta(days=1)
         else:
             to_date = datetime(current_year, current_month + 1, 1) - timedelta(days=1)
-
+            from_date = datetime(current_year, current_month, 1)
     # 計算日期範圍內的每日 debit 總和
     data_dict = {}
     while from_date <= to_date:
