@@ -96,12 +96,12 @@ def handle_message(event):
                 response_message = f"已成功綁定！用戶 {user.username} 與 Email {user_input_email} 已經成功關聯。"
             else:
                 # 如果 line_user_id 已存在，返回錯誤訊息
-                response_message = f"錯誤：此 Email 已經綁定過用戶 {user.username}。"
+                response_message = f"錯誤：此 Email 已經綁定過用戶 {user.username}，將反傳表單請您再次選取。"
                 send_bind_user_buttons(user_id)
             
         except User.DoesNotExist:
             # 如果找不到用戶，返回錯誤訊息並同時發送按鈕選單
-            response_message = f"錯誤：找不到 Email 關聯的用戶。"
+            response_message = f"歡迎你使用本會計系統，稍後會傳遞選單供使用者選取請稍待耐心。"
             send_bind_user_buttons(user_id)
 
     # 回覆用戶
