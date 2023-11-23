@@ -11,10 +11,12 @@ from .form import FinancialRecordForm,CategoryForm,  CSVUploadForm
 from django.http import HttpResponse
 import csv
 from django.utils import timezone
-
+# active import_csv
 from datetime import datetime
-
-
+# active analysis
+from django.db.models import Sum
+from django.http import JsonResponse
+from datetime import datetime, timedelta
 
 @login_required
 def create_category(request, group_pk):
@@ -138,8 +140,6 @@ def delete_record(request, group_pk, record_pk):
     return redirect('groups:detail_group', group_pk)
 
 
-
-
 def export_csv(request, group_pk):
     group = get_object_or_404(Groups, id=group_pk)  
 
@@ -189,7 +189,6 @@ def export_csv(request, group_pk):
 
     return response
 
-
 from django.utils import timezone
 from decimal import Decimal
 
@@ -212,7 +211,6 @@ def import_csv(request, group_pk):
                 category_name = row[1]
                 category, created = Category.objects.get_or_create(name=category_name, group=group, created_by=request.user)
 
-                
                 financial_record = FinancialRecord(
                     group=group,
                     name=row[0],
@@ -236,10 +234,7 @@ def import_csv(request, group_pk):
 
     return render(request, 'upload_csv.html', {'form': form})
 
-from django.db.models import Sum
-from django.http import JsonResponse
-from datetime import datetime, timedelta
-from calendar import monthrange
+
 
 def analysis(request, group_pk):
     # string
