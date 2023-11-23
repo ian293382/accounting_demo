@@ -17,6 +17,4 @@ urlpatterns = [
 
     path('groups/<int:group_pk>/records/analysis', views.analysis, name='analysis'),
 ]
-
-
-#  path('<int:group_pk>/categories/<int:category_pk>/edit/', views.edit_category, name='edit_category'),
+ㄕ
