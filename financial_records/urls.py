@@ -17,4 +17,3 @@ urlpatterns = [
 
     path('groups/<int:group_pk>/records/analysis', views.analysis, name='analysis'),
 ]
-ㄕ
